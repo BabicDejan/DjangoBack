@@ -4,13 +4,15 @@ from django.http.response import JsonResponse
 from rest_framework import generics, permissions, serializers
 from rest_framework.response import Response
 from knox.models import AuthToken
-from .serializers import UserSerializer, RegisterSerializer
+from .serializers import UserSerializer, RegisterSerializer, ModeratorSerializer
 from django.contrib.auth import login
 from django.contrib.auth import get_user_model
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
-
+from .models import Moderator
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt
 
 # Register API
 class RegisterAPI(generics.GenericAPIView):
@@ -42,3 +44,16 @@ def showUsers(request):
         serializer= UserSerializer(user, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+@csrf_exempt
+def moderatorRead(request):
+    if request.method =='GET':
+        moderator=Moderator.objects.all()
+        serializar = ModeratorSerializer(moderator, many=True)
+        return JsonResponse(serializar.data, safe=False)
+    elif request.method =='POST':
+        data= JSONParser().parse(request)
+        serializar=ModeratorSerializer(data=data)
+        if serializar.is_valid():
+            serializar.save()
+            return JsonResponse(serializar.data, status=201)
+        return JsonResponse(serializar.errors, status=400)
