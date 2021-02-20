@@ -73,3 +73,11 @@ def deleteModerator(request,pk):
     moderator= Moderator.objects.get(id=pk)
     moderator.delete()
     return HttpResponse(status=200)
+
+def switchModerator(request,pk):
+    moderator= Moderator.objects.get(id=pk)
+
+    user = User.objects.create_user(moderator.username, moderator.email, moderator.password,first_name=moderator.first_name, last_name=moderator.last_name, is_staff=True)
+    user.save()
+    moderator.delete()
+    return HttpResponse(status=200)
