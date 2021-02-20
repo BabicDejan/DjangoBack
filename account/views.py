@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.http import request
-from django.http.response import JsonResponse
+from django.http.response import HttpResponse, JsonResponse
 from rest_framework import generics, permissions, serializers
 from rest_framework.response import Response
 from knox.models import AuthToken
@@ -69,3 +69,7 @@ def oneUser(request):
         serializer= UserSerializer(user)
         return JsonResponse(serializer.data, safe=False)
     
+def deleteModerator(request,pk):
+    moderator= Moderator.objects.get(id=pk)
+    moderator.delete()
+    return HttpResponse(status=200)
