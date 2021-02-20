@@ -13,6 +13,8 @@ from knox.views import LoginView as KnoxLoginView
 from .models import Moderator
 from rest_framework.parsers import JSONParser
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required 
+from django.utils.decorators import method_decorator 
 
 # Register API
 class RegisterAPI(generics.GenericAPIView):
@@ -38,6 +40,8 @@ class LoginAPI(KnoxLoginView):
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
 
+
+
 def showUsers(request):
     if request.method =='GET':
         user= User.objects.all()
@@ -57,3 +61,11 @@ def moderatorRead(request):
             serializar.save()
             return JsonResponse(serializar.data, status=201)
         return JsonResponse(serializar.errors, status=400)
+
+def oneUser(request):
+    if request.user.is_authenticated:
+        current_user= request.user
+        user= User.objects.get(id=current_user.id)
+        serializer= UserSerializer(user)
+        return JsonResponse(serializer.data, safe=False)
+    

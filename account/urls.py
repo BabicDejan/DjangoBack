@@ -1,4 +1,4 @@
-from .views import RegisterAPI, showUsers, moderatorRead
+from .views import RegisterAPI, oneUser, showUsers, moderatorRead
 from django.urls import path
 from knox import views as knox_views
 from .views import LoginAPI
@@ -10,4 +10,5 @@ urlpatterns = [
     path('api/logoutall/', knox_views.LogoutAllView.as_view(), name='logoutall'),
     path('api/showUsers/', showUsers, name='showUsers'),
     path('api/showModerators/', moderatorRead, name='showUsers'),
+    path('api/oneUser/', oneUser, name='oneUser'),
 ]
