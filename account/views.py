@@ -91,7 +91,7 @@ def deleteModerator(request,pk):
 def deleteUser(request,pk):
     user= User.objects.get(id=pk)
     subject = "Deleted Account"
-    message = "Hello " +user.first_name +". Boli nas uvo sto ides!"
+    message = "Hello " +user.first_name +". Bas nam briga sto ides!"
     from_email= settings.EMAIL_HOST_USER
     to_list = [user.email]
     send_mail(subject,message,from_email,to_list,fail_silently=True)
@@ -185,5 +185,3 @@ class EventFilter(generics.ListAPIView):
     serializer_class = EventsSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['category']
-       
-
