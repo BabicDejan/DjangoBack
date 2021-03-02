@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'account',
     'knox',
     'django_filters',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -139,5 +141,12 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
         'knox.auth.TokenAuthentication',
-    ]
+    ],
+    
+}
+
+DJOSER = {
+    "USER_ID_FIELD": "username",
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION':True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
 }
