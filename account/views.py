@@ -72,13 +72,22 @@ class showUsers(generics.GenericAPIView):
             return JsonResponse(serializer.data, safe=False)
 
 
-@csrf_exempt
-def moderatorRead(request):
-    if request.method =='GET':
-        moderator=Moderator.objects.all()
-        serializar = ModeratorSerializer(moderator, many=True)
-        return JsonResponse(serializar.data, safe=False)
-    elif request.method =='POST':
+#API koji nam prikaze svi Moderatori. Samo Superuser ima pristup.
+class showModerators(views.APIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    def get(self,request):
+        user=request.user
+        if user.is_superuser ==True:
+            moderator=Moderator.objects.all()
+            serializar = ModeratorSerializer(moderator, many=True)
+            return JsonResponse(serializar.data, safe=False)
+
+
+#Api koji ce da kreira novi Moderator. Svi imaju pristup, ne mora biti logovan.
+class createModerator(views.APIView):
+    def post(self, request):
         data= JSONParser().parse(request)
         serializar=ModeratorSerializer(data=data)
         if serializar.is_valid():
@@ -195,11 +204,9 @@ class createStage(views.APIView):
 #API koji nama vrati jedan stage.
 class oneStage(views.APIView):
     def get(self,request,pk):
-        user=request.user
-        if user.is_superuser == True:
-            stage= Stage.objects.get(id=pk)
-            serializer= StagesSerializer(stage)
-            return JsonResponse(serializer.data, safe=False)
+        stage= Stage.objects.get(id=pk)
+        serializer= StagesSerializer(stage)
+        return JsonResponse(serializer.data, safe=False)
 
 
 #API koji updatuje Stage. Samo Superuser ima pristup.
@@ -259,7 +266,6 @@ class deleteEvent(views.APIView):
             return HttpResponse(status=200)
         
         
-
 #API koji ce da brise Stages. Samo Superuser ima pristup na ovaj.
 class deleteStage(views.APIView):
     permission_classes = [
@@ -273,7 +279,6 @@ class deleteStage(views.APIView):
             stage.delete()
             return HttpResponse(status=200)
         
-
 
 #API koji ce da filtrira dogadjaje.
 class EventFilter(generics.ListAPIView):
